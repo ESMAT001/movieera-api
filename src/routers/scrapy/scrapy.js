@@ -518,7 +518,6 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
         let temp = ''
         try {
             temp = name.join(" ").replaceAll(/[.*']/g, '').replaceAll(/[-]/g, " ").replaceAll(/[&]/g, 'and')
-        } catch (error) {
             name = name
                 .join(" ")
                 .replaceAll(/[.()*']/g, '')
@@ -526,6 +525,8 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
                 .replaceAll(/[&]/g, 'and')
                 .replaceAll(/II/g, '2')
                 .replaceAll(/III/g, '3')
+        } catch (error) {
+            console.log(error)
         }
 
         console.log(name, movieDate)

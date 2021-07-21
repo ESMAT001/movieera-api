@@ -134,7 +134,7 @@ function movieDataScraper(db) {
 async function scrapeDataInBackground(db, shouldReturn=false) {
 
     const dbData = await db.collection("meta_data").findOne({ name: "scrapy" })
-    let shouldScrapeData = false;
+    let shouldScrapeData = true;
     if (dbData) {
         console.log('updating old db data')
         const lastUpdated = new Date(dbData.last_updated)

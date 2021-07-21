@@ -6,7 +6,7 @@ const port = process.env.PORT || 3001
 
 
 const server = express()
-server.use("/api", mainRouter)
+server.use("/", mainRouter)
 // server.get("*", (req, res) => handle(req, res))
 server.listen(port, err => {
     if (err) throw err;

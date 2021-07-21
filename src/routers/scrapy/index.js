@@ -92,7 +92,10 @@ function movieDataScraper(db) {
         return same;
     }
 
-    async function insertDataToDb({ download_links }, id) {
+    async function insertDataToDb({ download_links }, id, update = false) {
+
+        if (update) return await db.collection("movie").updateOne({ id }, { $set: { download_links } })
+
         const responseData = await got(metaData.getMovieDetailsURL(id)).json()
         if (responseData.id !== id) return;
         responseData.download_links = download_links
@@ -117,7 +120,7 @@ function movieDataScraper(db) {
             //insert dataFromDb to db if download_links are different
             if (!checkIfTwoMediaIsSame(downloadLinksFromDbData, downloadLinksFromSpiderData)) {
                 console.log('download links are different')
-                await insertDataToDb(response, movieId)
+                await insertDataToDb(response, movieId, true)
             }
 
         } else {
@@ -131,7 +134,7 @@ function movieDataScraper(db) {
     return { search, insertDataToDb }
 }
 
-async function scrapeDataInBackground(db, shouldReturn=false) {
+async function scrapeDataInBackground(db, shouldReturn = false) {
 
     const dbData = await db.collection("meta_data").findOne({ name: "scrapy" })
     let shouldScrapeData = true;
@@ -189,7 +192,7 @@ async function scrapeDataInBackground(db, shouldReturn=false) {
         if (shouldReturn) {
             return foundData
         }
-    }else{
+    } else {
         console.log('waiting for perfect time to scrape using data from db')
     }
 

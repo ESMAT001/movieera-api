@@ -41,7 +41,7 @@ function movieDataScraper(db) {
     function checkIfTwoMediaIsSame(media1, media2) {
         let same = true
 
-        if(media1==null || media2==null || media1===undefined || media2===undefined) {
+        if (media1 == null || media2 == null || media1 === undefined || media2 === undefined) {
             console.log("media1 or media2 is null")
             return false
         }
@@ -100,7 +100,10 @@ function movieDataScraper(db) {
 
     async function insertDataToDb({ download_links }, id, update = false) {
 
-        if (update) return await db.collection("movie").updateOne({ id }, { $set: { download_links } })
+        if (update) {
+            console.log('updating')
+            return await db.collection("movie").updateOne({ id }, { $set: { download_links } })
+        }
 
         const responseData = await got(metaData.getMovieDetailsURL(id)).json()
         if (responseData.id !== id) return;
@@ -126,7 +129,7 @@ function movieDataScraper(db) {
             //insert dataFromDb to db if download_links are different
             if (!checkIfTwoMediaIsSame(downloadLinksFromDbData, downloadLinksFromSpiderData)) {
                 console.log('download links are different')
-                await insertDataToDb(response, movieId, true)
+                await insertDataToDb(response.data, movieId, true)
             }
 
         } else {
@@ -140,7 +143,7 @@ function movieDataScraper(db) {
     return { search, insertDataToDb }
 }
 
-async function scrapeDataInBackground(db, shouldReturn = false) {
+async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
     const dbData = await db.collection("meta_data").findOne({ name: "scrapy" })
     let shouldScrapeData = true;
@@ -196,7 +199,7 @@ async function scrapeDataInBackground(db, shouldReturn = false) {
         }
         console.log('scrapping data finished')
         if (shouldReturn) {
-            return foundData
+            return callback(foundData);
         }
     } else {
         console.log('waiting for perfect time to scrape using data from db')

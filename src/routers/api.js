@@ -28,7 +28,7 @@ router.use(express.json())
 router.get('/trending', async function (req, res) {
     const db = await connectToDb(dbName)
     res.send(await fetchData(db))
-    scrapeDataInBackground(db)
+    scrapeDataInBackground(db,()=>process.exit())
 })
 
 router.get('/movies', async (req, res) => {

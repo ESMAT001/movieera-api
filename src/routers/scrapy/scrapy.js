@@ -515,21 +515,15 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
         const pageNumber = name.shift()
         const id = name.shift()
         const movieDate = name.pop()
-        let temp = ''
-        try {
-            
-            temp = name.join(" ").replaceAll(/[.*']/g, '').replaceAll(/[-]/g, " ").replaceAll(/[&]/g, 'and')
-            name = name
-                .join(" ")
-                .replaceAll(/[.()*']/g, '')
-                .replaceAll(/[-]/g, " ")
-                .replaceAll(/[&]/g, 'and')
-                .replaceAll(/II/g, '2')
-                .replaceAll(/III/g, '3')
+        let temp = name.join(" ").replaceAll(/[.*']/g, '').replaceAll(/[-]/g, " ").replaceAll(/[&]/g, 'and')
+        name = name
+            .join(" ")
+            .replaceAll(/[.()*']/g, '')
+            .replaceAll(/[-]/g, " ")
+            .replaceAll(/[&]/g, 'and')
+            .replaceAll(/II/g, '2')
+            .replaceAll(/III/g, '3')
 
-        } catch (error) {
-            console.log(error)
-        }
 
         console.log(name, movieDate)
         if (db) {

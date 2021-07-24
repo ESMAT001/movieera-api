@@ -178,7 +178,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
     if (shouldScrapeData) {
         console.log('scrapping data started')
-        const totalPgesToScrape = 3
+        const totalPgesToScrape = 1
         const { search } = movieDataScraper(db)
         let foundData = []
         for (let page = 1; page <= totalPgesToScrape; page++) {
@@ -201,6 +201,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
         if (shouldReturn) {
             return callback(foundData);
         }
+        callback()
     } else {
         console.log('waiting for perfect time to scrape using data from db')
     }

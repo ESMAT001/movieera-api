@@ -28,7 +28,10 @@ router.use(express.json())
 router.get('/trending', async function (req, res) {
     const db = await connectToDb(dbName)
     res.send(await fetchData(db))
-    scrapeDataInBackground(db,()=>process.exit())
+    scrapeDataInBackground(db, () => {
+        console.log('exiting')
+        process.exit(0)
+    })
 })
 
 router.get('/movies', async (req, res) => {
@@ -57,7 +60,7 @@ router.get('/movie', async (req, res) => {
 router.get('/test', async (req, res) => {
     const db = await connectToDb(dbName)
 
-    res.send(await scrapeDataInBackground(db,true))
+    res.send(await scrapeDataInBackground(db, true))
 })
 
 

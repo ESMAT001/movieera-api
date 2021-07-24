@@ -40,6 +40,12 @@ function movieDataScraper(db) {
 
     function checkIfTwoMediaIsSame(media1, media2) {
         let same = true
+
+        if(media1==null || media2==null || media1===undefined || media2===undefined) {
+            console.log("media1 or media2 is null")
+            return false
+        }
+
         for (const key in media2) {
             if (Object.hasOwnProperty.call(media2, key) && Object.hasOwnProperty.call(media1, key)) {
                 //check if the two objects are array and their length and values are the same

@@ -178,14 +178,14 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
     if (shouldScrapeData) {
         console.log('scrapping data started')
-        const totalPgesToScrape = 1
+        const totalPgesToScrape = 20
         const { search } = movieDataScraper(db)
         let foundData = []
         for (let page = 1; page <= totalPgesToScrape; page++) {
 
             const { results } = await got(metaData.getTrendingURL(page)).json()
 
-            for (let index = 0; index < 2; index++) {
+            for (let index = 0; index < results.length; index++) {
                 const movieName = results[index].original_title
                 const movieId = results[index].id
                 const movieDate = new Date(results[index].release_date).getFullYear()
@@ -214,61 +214,3 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
 
 module.exports = scrapeDataInBackground
-
-
-
-
-
-
-
-
-
-// async function insert({ id, data, fromSite }) {
-    //     id = parseInt(id)
-    //     console.log(id, data.movie_name, fromSite)
-    //     fs.appendFileSync('./foundData.txt', id + " " + data.movie_name + " " + fromSite + "\n")
-    //     if (fromSite) db.collection("movies").insertOne(data);
-    //     if (await db.collection("movie").findOne({ id })) return;
-    //     let movieData = await db.collection("tmdb").findOne({ id })
-
-
-    //     if (!movieData) return;
-
-    //     movieData.download_links = data.download_links
-    //     const imgPath = 'https://image.tmdb.org/t/p/w500'
-    //     movieData.backdrop_path = imgPath + movieData.backdrop_path
-    //     movieData.poster_path = imgPath + movieData.poster_path
-    //     await db.collection("movie").insertOne(movieData)
-    //     console.log(id, data.movie_name, 'inserted')
-    // }
-
-
-
-
-        // spider.readFile('notFoundBase.txt', async function (line) {
-        //     const data = await spider.search(line, db)
-        //     // console.log(data)
-        //     if (data.data) await insert(data);
-        // })
-
-        // let tempData = await spider.search("3 529203 City of Lies 2018")
-        // console.log(tempData)
-
-        //         // spider.crawl()
-
-        // spider.crawlSinglePage("https://www.film2movie.asia/97001/%d8%af%d8%a7%d9%86%d9%84%d9%88%d8%af-%d8%b3%d8%b1%db%8c%d8%a7%d9%84-zack-snyders-justice-league/")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -310,6 +310,14 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
             // console.log(name, 'name from search part')
             const movieNameRegx = new RegExp(name, 'i')
             for (let index = 0; index < links.length; index++) {
+
+                if (
+                    new RegExp(/دانلود موسیقی متن فیلم/, 'g').test(decodeURI(links[index].href).replaceAll("-", ' '))
+                    ||
+                    new RegExp(/دانلود موسیقی متن فیلم/, 'g').test(movietitlesFromSite[index].textContent)
+                ) continue;
+
+
                 if (
                     movieNameRegx.test(decodeURI(links[index].href).replaceAll("-", ' ')) ||
                     (

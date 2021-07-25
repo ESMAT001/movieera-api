@@ -185,7 +185,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
             const { results } = await got(metaData.getTrendingURL(page)).json()
 
-            for (let index = 0; index < results.length; index++) {
+            for (let index = 0; index < 2; index++) {
                 const movieName = results[index].original_title
                 const movieId = results[index].id
                 const movieDate = new Date(results[index].release_date).getFullYear()

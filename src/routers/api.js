@@ -1,9 +1,11 @@
 const express = require('express');
 const got = require('got');
-const connectToDb = require('../db')
+const {connectToDb} = require('../db')
 const fetchData = require('./functions/trending')
 const fetchMoviesRouteData = require('./functions/movies')
 const fetchSingleMovieData = require('./functions/movie')
+const emitter = require('./functions/endScriptEmitter')
+
 //test
 
 const scrapeDataInBackground = require('./scrapy/index')
@@ -28,10 +30,7 @@ router.use(express.json())
 router.get('/trending', async function (req, res) {
     const db = await connectToDb(dbName)
     res.send(await fetchData(db))
-    scrapeDataInBackground(db, () => {
-        console.log('exiting')
-        process.exit(0)
-    })
+    scrapeDataInBackground(db, () => emitter.emit('exit'))
 })
 
 router.get('/movies', async (req, res) => {

@@ -11,8 +11,7 @@ const client = new MongoClient(uri, {
 });
 
 let database;
-
-module.exports = async function connectToDb(dbName) {
+async function connectToDb(dbName) {
     try {
         if (database) return database;
         console.log('creating new db')
@@ -25,4 +24,16 @@ module.exports = async function connectToDb(dbName) {
     } catch (err) {
         await client.close();
     }
+}
+//close db connection
+async function closeDb() {
+    if (database) {
+        console.log("Closing db connection");
+        await client.close();
+        database = null;
+    }
+}
+
+module.exports = {
+    connectToDb, closeDb
 }

@@ -179,7 +179,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
     if (shouldScrapeData) {
         console.log('scrapping data started')
-        const totalPgesToScrape = 3
+        const totalPgesToScrape = 20
         const { search } = movieDataScraper(db)
         let foundData = []
         for (let page = 1; page <= totalPgesToScrape; page++) {
@@ -190,7 +190,6 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
                 const movieName = results[index].original_title
                 const movieId = results[index].id
                 const movieDate = new Date(results[index].release_date).getFullYear()
-                console.log(`${3} ${movieId} ${movieName} ${movieDate}`)
                 const returnData = await search(`${3} ${movieId} ${movieName} ${movieDate}`)
                 if (returnData.data && shouldReturn) {
                     foundData.push(returnData.data)

@@ -162,7 +162,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
                 $set: { last_updated: date }
             })
 
-            clg('scrapy data updated',date)
+            console.log('scrapy data updated',date)
         };
 
     } else {

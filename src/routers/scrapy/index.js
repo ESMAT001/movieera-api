@@ -146,7 +146,7 @@ function movieDataScraper(db) {
 async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
     const dbData = await db.collection("meta_data").findOne({ name: "scrapy" })
-    let shouldScrapeData = true;
+    let shouldScrapeData = false;
     if (dbData) {
         console.log('updating old db data')
         const lastUpdated = new Date(dbData.last_updated)
@@ -161,6 +161,8 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
             }, {
                 $set: { last_updated: date }
             })
+
+            clg('scrapy data updated',date)
         };
 
     } else {

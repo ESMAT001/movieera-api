@@ -557,10 +557,21 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
         }
 
         let data = await searchFirstSite(name + " " + movieDate, true)
+
+        if (!data && name.indexOf(":") !== -1) {
+            data = await searchFirstSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true)
+        }
+
         if (!data) {
             console.log('not found in first going to second site')
             data = await searchSecondSite(name + " " + movieDate, true)
+            if (!data && name.indexOf(":") !== -1) {
+                data = await searchSecondSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true)
+            }
         };
+
+        if (!data) console.log('not found in second')
+
         return { id, data, fromSite: true };
 
     }

@@ -2,7 +2,6 @@ const scrapyJS = require('./scrapy')
 const got = require("got")
 const fs = require('fs')
 const metaData = require('../../utils')
-const { response } = require('express')
 
 const baseURL = ''
 const firstPage = 819
@@ -146,7 +145,7 @@ function movieDataScraper(db) {
 async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
     const dbData = await db.collection("meta_data").findOne({ name: "scrapy" })
-    let shouldScrapeData = false;
+    let shouldScrapeData = true;
     if (dbData) {
         console.log('updating old db data')
         const lastUpdated = new Date(dbData.last_updated)
@@ -180,7 +179,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
 
     if (shouldScrapeData) {
         console.log('scrapping data started')
-        const totalPgesToScrape = 20
+        const totalPgesToScrape = 3
         const { search } = movieDataScraper(db)
         let foundData = []
         for (let page = 1; page <= totalPgesToScrape; page++) {
@@ -191,6 +190,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
                 const movieName = results[index].original_title
                 const movieId = results[index].id
                 const movieDate = new Date(results[index].release_date).getFullYear()
+                console.log(`${3} ${movieId} ${movieName} ${movieDate}`)
                 const returnData = await search(`${3} ${movieId} ${movieName} ${movieDate}`)
                 if (returnData.data && shouldReturn) {
                     foundData.push(returnData.data)

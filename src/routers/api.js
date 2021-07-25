@@ -56,10 +56,13 @@ router.get('/movie', async (req, res) => {
     res.send(data)
 })
 
-router.get('/test', async (req, res) => {
-    const db = await connectToDb(dbName)
 
-    res.send(await scrapeDataInBackground(db, true))
+const {search} = require('./scrapy/test')
+router.get('/test', async (req, res) => {
+    const response = await search(`${3} ${2223} ${'Space Jam A New Legacy'} ${2021}`)
+    res.send(response)
+    // const db = await connectToDb(dbName)
+    // res.send(await scrapeDataInBackground(db, true))
 })
 
 

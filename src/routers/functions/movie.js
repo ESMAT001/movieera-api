@@ -1,4 +1,8 @@
 module.exports = async function fetchSingleMovieData(db, id) {
-    const data = await db.collection('movie').findOne({ id })
+    const data = await db.collection('movie').findOne({ id }, {
+        projection: {
+            _id: false
+        }
+    })
     return data
 }

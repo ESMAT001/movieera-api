@@ -9,12 +9,15 @@ async function search(db, query) {
                     { title: { $regex: query, $options: 'i' } },
                     { original_title: { $regex: query, $options: 'i' } },
                     { id: parseInt(query) },
-                    { imdb_id:query}
+                    { imdb_id: query }
                 ]
             },
             { status: "Released" }
         ]
-    }).toArray();
+    })
+    .limit(10)
+    .sort({release_date: -1})
+    .toArray();
     return results;
 }
 

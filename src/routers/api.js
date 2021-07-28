@@ -1,10 +1,12 @@
 const express = require('express');
 const got = require('got');
-const {connectToDb} = require('../db')
+const { connectToDb } = require('../db')
 const fetchData = require('./functions/trending')
 const fetchMoviesRouteData = require('./functions/movies')
 const fetchSingleMovieData = require('./functions/movie')
 const emitter = require('./functions/endScriptEmitter')
+
+const search = require('./functions/search')
 
 //test
 
@@ -57,9 +59,23 @@ router.get('/movie', async (req, res) => {
 })
 
 
-const {search} = require('./scrapy/test')
+//search endpoint 
+router.get('/search', async (req, res) => {
+    let { query } = req.query
+    if (!query || /[-%^*|~={}\[\];<>?\/]/g.test(query)) return res.status(400).send("Bad request!");
+    //connect to db
+    const db = await connectToDb(dbName)
+    const data = await search(db, query)
+    if (!data.length) return res.status(404).send(data)
+    res.status(200).send(data)
+})
+
+
+
+
+const { searchMovie } = require('./scrapy/test')
 router.get('/test', async (req, res) => {
-    const response = await search(`${3} ${2223} ${'Space Jam A New Legacy'} ${2021}`)
+    const response = await searchMovie(`${3} ${2223} ${'Space Jam A New Legacy'} ${2021}`)
     res.send(response)
     // const db = await connectToDb(dbName)
     // res.send(await scrapeDataInBackground(db, true))

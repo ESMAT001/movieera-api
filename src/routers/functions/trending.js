@@ -83,7 +83,7 @@ async function getIds(movieCount, db) {
 }
 
 async function fetchData(db) {
-    const movieCount = 18;
+    const movieCount = 10;
     const movieIds = await getIds(movieCount, db)
     const movieData = await db.collection("movie").find({
         $and: [{

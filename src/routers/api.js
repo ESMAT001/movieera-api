@@ -38,13 +38,11 @@ const whiteList = [
 const customMultipleCors = (whiteList) => {
     return (req, res, next) => {
         const origin = req.headers.origin;
-        console.log(req.headers)
         if (whiteList.indexOf(origin) === -1) {
             return res.status(403).send('Forbidden');
         }
         res.header("Access-Control-Allow-Origin", origin);
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        // console.log(req.headers.origin) 
         next()
     }
 }

@@ -3,7 +3,7 @@ const apiRouter = require('./routers/api')
 const imageRouter = require('./routers/image')
 const router = express.Router();
 
-const whiteList = [undefined,'https://movieera-taupe.vercel.app/',]
+const whiteList = ['https://test.com/','http://test.com/','https://movieera-taupe.vercel.app/','https://rapidapi.com/']
 const customMultipleCors = (whiteList) => {
     return (req, res, next) => {
         const origin = req.headers.origin;

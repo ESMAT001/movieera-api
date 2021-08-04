@@ -12,7 +12,8 @@ const customMultipleCors = (whiteList) => {
         }
         res.header("Access-Control-Allow-Origin", origin);
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        console.log(req.headers)
+        console.log(req.headers.origin) 
+        console.log(req.headers.referer)   
         next()
     }
 }

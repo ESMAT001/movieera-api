@@ -11,7 +11,7 @@ router.get('/placeholder/:imgId', (req, res) => {
     res.redirect(placeholderImgUrl + imgId)
 })
 
-router.get('/:imgId', (req, res) => {
+router.get('/original/:imgId', (req, res) => {
     const { imgId } = req.params
     res.redirect(url + imgId)
 })

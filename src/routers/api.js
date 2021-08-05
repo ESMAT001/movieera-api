@@ -26,11 +26,10 @@ const dbName = "media"
 
 const router = express.Router();
 
-var allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:5500',
-    'https://flaviocopes.com/express-cors/'];
+var allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:5500'];
 const corsOptions = {
     origin: function (origin, callback) {
-        console.log(origin, allowedOrigins)
+        // console.log(origin, allowedOrigins)
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) === -1) {
             var msg = 'The CORS policy for this site does not ' +

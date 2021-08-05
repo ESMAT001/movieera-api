@@ -41,15 +41,13 @@ const customMultipleCors = (whiteList) => {
         if (whiteList.indexOf(origin) === -1) {
             return res.status(403).send('Forbidden');
         }
-        res.header("Access-Control-Allow-Origin", origin);
+        res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         next()
     }
 }
 
 router.use(customMultipleCors(whiteList))
-
-
 
 router.get('/trending', async function (req, res) {
     const db = await connectToDb(dbName)

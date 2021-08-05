@@ -1,5 +1,5 @@
 const express = require('express');
-const got = require('got');
+const cors = require('cors');
 const { connectToDb } = require('../db')
 const fetchData = require('./functions/trending')
 const fetchMoviesRouteData = require('./functions/movies')
@@ -26,29 +26,23 @@ const dbName = "media"
 
 const router = express.Router();
 
-router.use(express.json())
-
-const whiteList = [
-    'https://test.com/',
-    'http://test.com/',
-    "https://movieera.esmat@001.com",
-    'https://movieera-taupe.vercel.app/',
-    'https://rapidapi.com/'
-]
-const customMultipleCors = (whiteList) => {
-    return (req, res, next) => {
-        const origin = req.headers.origin;
-        if (whiteList.indexOf(origin) === -1) {
-            return res.status(403).send('Forbidden');
+var allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:5500',
+    'https://flaviocopes.com/express-cors/'];
+const corsOptions = {
+    origin: function (origin, callback) {
+        console.log(origin, allowedOrigins)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+            return callback(msg, false);
         }
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next()
+        return callback(null, true);
     }
 }
 
-router.use(customMultipleCors(whiteList))
-
+router.use(express.json())
+router.use(cors(corsOptions))
 router.get('/trending', async function (req, res) {
     const db = await connectToDb(dbName)
     res.send(await fetchData(db))

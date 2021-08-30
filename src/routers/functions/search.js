@@ -1,5 +1,22 @@
 const sanitize = require('mongo-sanitize');
 
+const projection = {
+    _id: false,
+    adult: false,
+    homepage: false,
+    overview: false,
+    popularity: false,
+    production_companies: false,
+    production_countries: false,
+    revenue: false,
+    spoken_languages: false,
+    tagline: false,
+    video: false,
+    videos: false,
+    download_links: false
+
+}
+
 async function search(db, query) {
     query = sanitize(query);
     let results = await db.collection('movie').find({
@@ -14,10 +31,12 @@ async function search(db, query) {
             },
             { status: "Released" }
         ]
+    }, {
+        projection
     })
-    .limit(10)
-    .sort({release_date: -1})
-    .toArray();
+        .limit(10)
+        .sort({ release_date: -1 })
+        .toArray();
     return results;
 }
 

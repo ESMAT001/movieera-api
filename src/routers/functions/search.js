@@ -37,7 +37,13 @@ async function search(db, query) {
         .limit(10)
         .sort({ release_date: -1 })
         .toArray();
-    return results;
+    
+    const ids = results.map(movie => movie.id);
+    const uniqueResults = results.filter((movie, index) => {
+        return ids.indexOf(movie.id) === index;
+    });
+
+    return uniqueResults;
 }
 
 

@@ -98,6 +98,10 @@ async function fetchData(db) {
     })
     .sort({ release_date: -1 })
     .toArray()
-    return movieData
+    const ids= movieData.map(movie => movie.id)
+    const uniqueMovieData = movieData.filter((movie, index) => {
+        return ids.indexOf(movie.id) === index
+    })
+    return uniqueMovieData
 }
 module.exports = fetchData

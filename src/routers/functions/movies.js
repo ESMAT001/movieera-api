@@ -1,6 +1,6 @@
 const { projectionFields } = require('../../utils')
 
-async function fetchMoviesRouteData(db, page, limit = 12) {
+async function fetchMoviesRouteData(db, page, limit = 20) {
     const skip = (page - 1) * limit
     const data = await db.collection('movie')
         .find({ status: "Released" }, { projection: projectionFields })
@@ -8,14 +8,19 @@ async function fetchMoviesRouteData(db, page, limit = 12) {
         .skip(skip)
         .limit(limit)
         .toArray()
-
+    const ids = data.map(movie => movie.id)
+    //remove duplicates from data array
+    const uniqueData = data.filter((movie, index) => {
+        return ids.indexOf(movie.id) === index
+    })
+    
     const totalResult = await db.collection('movie')
         .find({ status: "Released" })
         .count()
 
     const totalPages = Math.ceil(totalResult / limit)
 
-    return { page, totalResult, totalPages, results: data }
+    return { page, totalResult, totalPages, results: uniqueData }
 }
 
 module.exports = fetchMoviesRouteData

@@ -26,7 +26,7 @@ const dbName = "media"
 
 const router = express.Router();
 
-var allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:5500','https://movieera-taupe.vercel.app'];
+var allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:5500', 'https://movieera-taupe.vercel.app'];
 const corsOptions = {
     origin: function (origin, callback) {
         // console.log(origin, allowedOrigins)
@@ -74,11 +74,13 @@ router.get('/movie', async (req, res) => {
 
 //search endpoint 
 router.get('/search', async (req, res) => {
-    let { query } = req.query
+    let { query, limit = 10, page = 1 } = req.query
+    if (limit) limit = parseInt(limit)
+    if (page) page = parseInt(page)
     if (!query || /[-%^*|~={}\[\];<>?\/]/g.test(query)) return res.status(400).send("Bad request!");
     //connect to db
     const db = await connectToDb(dbName)
-    const data = await search(db, query)
+    const data = await search(db, query, limit,page)
     if (!data.length) return res.status(404).send(data)
     res.status(200).send(data)
 })

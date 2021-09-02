@@ -17,7 +17,8 @@ const projection = {
 
 }
 
-async function search(db, query) {
+async function search(db, query,limit,page) {
+    const skip = (page - 1) * limit
     query = sanitize(query);
     let results = await db.collection('movie').find({
         $and: [
@@ -34,7 +35,8 @@ async function search(db, query) {
     }, {
         projection
     })
-        .limit(10)
+        .skip(skip)
+        .limit(limit)
         .sort({ release_date: -1 })
         .toArray();
     

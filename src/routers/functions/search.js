@@ -17,7 +17,7 @@ const projection = {
 
 }
 
-async function search(db, query, limit, page, type = "full") {
+async function search(db, query, limit, page, mode = "full") {
     const skip = (page - 1) * limit
     query = sanitize(query);
     let results = await db.collection('movie').find({
@@ -42,14 +42,13 @@ async function search(db, query, limit, page, type = "full") {
     const uniqueResults = finalResults.filter((movie, index) => {
         return ids.indexOf(movie.id) === index;
     });
-    
-    if (type === "full") {
-        const totalResults = await results.count()
-        const totalPages = Math.ceil(totalResults / limit)
-        return { page, totalResults, totalPages, results: uniqueResults }
-    }else{
-        return uniqueResults
-    }
+
+    if (mode !== "full") return uniqueResults;
+
+    const totalResults = await results.count()
+    const totalPages = Math.ceil(totalResults / limit)
+    return { page, totalResults, totalPages, results: uniqueResults }
+
 }
 
 

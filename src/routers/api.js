@@ -74,13 +74,13 @@ router.get('/movie', async (req, res) => {
 
 //search endpoint 
 router.get('/search', async (req, res) => {
-    let { query, limit = 10, page = 1, type = 'basic' } = req.query
+    let { query, limit = 10, page = 1, mode = 'basic' } = req.query
     if (limit) limit = parseInt(limit)
     if (page) page = parseInt(page)
     if (!query || /[-%^*|~={}\[\];<>?\/]/g.test(query)) return res.status(400).send("Bad request!");
     //connect to db
     const db = await connectToDb(dbName)
-    const data = await search(db, query, limit, page, type)
+    const data = await search(db, query, limit, page, mode)
     if (!data.length) return res.status(404).send(data)
     res.status(200).send(data)
 })

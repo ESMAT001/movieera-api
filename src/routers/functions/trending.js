@@ -41,6 +41,74 @@ async function apiCallForIds(movieCount, db) {
 
 async function getIds(movieCount, db) {
 
+    async function finalIds(movieIds) {
+
+        const projectionFieldsForOnlyId = {
+            _id: false,
+            adult: false,
+            backdrop_path: false,
+            belongs_to_collection: false,
+            budget: false,
+            genres: false,
+            homepage: false,
+            imdb_id: false,
+            original_language: false,
+            original_title: false,
+            overview: false,
+            popularity: false,
+            poster_path: false,
+            production_companies: false,
+            production_countries: false,
+            release_date: false,
+            revenue: false,
+            runtime: false,
+            spoken_languages: false,
+            status: false,
+            tagline: false,
+            title: false,
+            video: false,
+            vote_average: false,
+            vote_count: false,
+            videos: false,
+            images: false,
+            download_links: false
+        }
+
+        const finalObject = {
+            trending: movieIds
+        }
+
+        let { genres } = await db.collection("meta_data").findOne({ name: "trending" })
+
+        for (let index = 0; index < genres.length; index++) {
+            const genre = genres[index];
+            let res = await db.collection('movie')
+                .find({
+                    $and: [
+                        { genres: { $elemMatch: { id: genre.id } } }
+                        , { id: { $nin: movieIds } },
+                        { status: "Released" }
+                    ]
+                }, { projection: projectionFieldsForOnlyId })
+                .sort({ release_date: -1 })
+                .limit(4)
+                .toArray()
+            res = res.map(r => r.id)
+            movieIds = movieIds.concat(res)
+            genre.movieIds = res
+        }
+
+        await db.collection("meta_data").updateOne({
+            name: 'trending'
+        }, {
+            $set: { genres }
+        })
+
+        finalObject.genres = genres
+
+        return finalObject
+    }
+
     const dbData = await db.collection("meta_data").findOne({ name: "trending" })
     let shouldUpdateData = false;
     if (dbData) {
@@ -73,35 +141,50 @@ async function getIds(movieCount, db) {
         }, {
             $set: { movieIds, last_updated: date }
         })
-        return movieIds;
+
+        return finalIds(movieIds);
 
     } else {
         console.log('using cached data for trending data')
-        const { movieIds } = await db.collection("meta_data").findOne({ name: "trending" })
-        return movieIds
+        const { movieIds, genres } = await db.collection("meta_data").findOne({ name: "trending" })
+        return { trending: movieIds, genres }
     }
 }
 
 async function fetchData(db) {
     const movieCount = 22;
     const movieIds = await getIds(movieCount, db)
-    const movieData = await db.collection("movie").find({
-        $and: [{
-            'id': { $in: movieIds }
-        }
-            ,
-        {
-            adult: false
-        }]
+    const trendingMovieData = await db.collection("movie").find({
+        $and: [{ 'id': { $in: movieIds.trending } },
+        { adult: false }]
     }, {
         projection: projectionFields
     })
-    .sort({ release_date: -1 })
-    .toArray()
-    const ids= movieData.map(movie => movie.id)
-    const uniqueMovieData = movieData.filter((movie, index) => {
+        .sort({ release_date: -1 })
+        .toArray()
+
+    const genreMovieData = []
+
+    for (let index = 0; index < movieIds.genres.length; index++) {
+        const genre = movieIds.genres[index];
+        genreMovieData.push(
+            {
+                [genre.name]: await db.collection("movie").find({
+                    $and: [{ 'id': { $in: genre.movieIds } },
+                    { adult: false }]
+                }, {
+                    projection: projectionFields
+                })
+                    .sort({ release_date: -1 })
+                    .toArray()
+            }
+        )
+    }
+
+    const ids = trendingMovieData.map(movie => movie.id)
+    const uniqueMovieData = trendingMovieData.filter((movie, index) => {
         return ids.indexOf(movie.id) === index
     })
-    return uniqueMovieData
+    return { trending: uniqueMovieData, genres: genreMovieData }
 }
 module.exports = fetchData

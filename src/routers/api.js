@@ -85,6 +85,29 @@ router.get('/search', async (req, res) => {
     res.status(200).send(data)
 })
 
+//genre endpoint
+router.get('/genre', async (req, res) => {
+    let { name, limit = 10, page = 1 } = req.query
+    if (!name || !/[a-zA-Z]/g.test(name)) return res.status(400).send("Bad request from name!");
+    //change first characeter to uppercase
+    name = name.charAt(0).toUpperCase() + name.slice(1)
+    if (limit) limit = parseInt(limit)
+    if (page) page = parseInt(page)
+    if (limit < 1 || page < 1) return res.status(400).send("Bad request!");
+    //connect to db
+    const db = await connectToDb(dbName)
+    const data = await db.collection('movie')
+        .find({ genres: { $elemMatch: { name } } })
+        .sort({ release_date: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .toArray()
+
+    if (!data.length) return res.status(404).send(data)
+    res.status(200).send(data)
+})
+
+
 
 
 

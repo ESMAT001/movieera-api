@@ -41,8 +41,7 @@ async function apiCallForIds(movieCount, db) {
 
 async function getIds(movieCount, db) {
 
-    async function finalIds(movieIds) {
-
+    async function getUniqueIds(movieIds, genreId) {
         const projectionFieldsForOnlyId = {
             _id: false,
             adult: false,
@@ -74,6 +73,39 @@ async function getIds(movieCount, db) {
             download_links: false
         }
 
+        let uniqueIds = []
+        while (uniqueIds.length < 4) {
+            const limit = 4 - uniqueIds.length
+            let res = await db.collection('movie')
+                .find({
+                    $and: [
+                        { genres: { $elemMatch: { id: genreId } } }
+                        , { id: { $nin: movieIds } },
+                        { status: "Released" }
+                    ]
+                }, { projection: projectionFieldsForOnlyId })
+                .sort({ release_date: -1 })
+                .limit(limit)
+                .toArray()
+
+            //unique res ids
+            let ids = res.map(movie => movie.id)
+            const unique = ids.filter((id, index) => {
+                return ids.indexOf(id) === index
+            })
+            uniqueIds = uniqueIds.concat(unique)
+            movieIds = movieIds.concat(unique)
+        }
+
+        return {
+            res: uniqueIds,
+            movieIds
+        }
+
+    }
+
+    async function finalIds(movieIds) {
+
         const finalObject = {
             trending: movieIds
         }
@@ -82,19 +114,10 @@ async function getIds(movieCount, db) {
 
         for (let index = 0; index < genres.length; index++) {
             const genre = genres[index];
-            let res = await db.collection('movie')
-                .find({
-                    $and: [
-                        { genres: { $elemMatch: { id: genre.id } } }
-                        , { id: { $nin: movieIds } },
-                        { status: "Released" }
-                    ]
-                }, { projection: projectionFieldsForOnlyId })
-                .sort({ release_date: -1 })
-                .limit(4)
-                .toArray()
-            res = res.map(r => r.id)
-            movieIds = movieIds.concat(res)
+
+            const { res, movieIds: finalMovieIds } = await getUniqueIds(movieIds, genre.id)
+
+            movieIds = finalMovieIds
             genre.movieIds = res
         }
 
@@ -164,19 +187,30 @@ async function fetchData(db) {
         .toArray()
 
     const genreMovieData = []
-
+    console.log('reached')
     for (let index = 0; index < movieIds.genres.length; index++) {
         const genre = movieIds.genres[index];
+        let genreData = await db.collection("movie").find({
+            $and: [{ 'id': { $in: genre.movieIds } },
+            { adult: false }]
+        }, {
+            projection: projectionFields
+        })
+            .sort({ release_date: -1 })
+            .toArray()
+        const insertedIds = []
+        const finalRes = []
+        for (let index = 0; index < genreData.length; index++) {
+            const movie = genreData[index];
+            if (insertedIds.indexOf(movie.id) === -1) {
+                insertedIds.push(movie.id)
+                finalRes.push(movie)
+            }
+        }
+
         genreMovieData.push(
             {
-                [genre.name]: await db.collection("movie").find({
-                    $and: [{ 'id': { $in: genre.movieIds } },
-                    { adult: false }]
-                }, {
-                    projection: projectionFields
-                })
-                    .sort({ release_date: -1 })
-                    .toArray()
+                [genre.name]: finalRes
             }
         )
     }

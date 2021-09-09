@@ -97,14 +97,27 @@ router.get('/genre', async (req, res) => {
     //connect to db
     const db = await connectToDb(dbName)
     const data = await db.collection('movie')
-        .find({ genres: { $elemMatch: { name } } })
+        .find({
+            $and: [{ genres: { $elemMatch: { name } } },
+            { status: "Released" }]
+        })
         .sort({ release_date: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .toArray()
 
     if (!data.length) return res.status(404).send(data)
-    res.status(200).send(data)
+
+    const totalResult = await db.collection('movie')
+        .find({
+            $and: [{ genres: { $elemMatch: { name } } },
+            { status: "Released" }]
+        })
+        .count()
+
+    const totalPages = Math.ceil(totalResult / limit)
+
+    res.status(200).send({ page, totalResult, totalPages, results: data })
 })
 
 

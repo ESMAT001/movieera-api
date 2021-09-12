@@ -96,7 +96,7 @@ router.get('/genre', async (req, res) => {
     if (limit < 1 || page < 1) return res.status(400).send("Bad request!");
     //connect to db
     const db = await connectToDb(dbName)
-    const data = await db.collection('movie')
+    let data = await db.collection('movie')
         .find({
             $and: [{ genres: { $elemMatch: { name } } },
             { status: "Released" }]
@@ -107,6 +107,16 @@ router.get('/genre', async (req, res) => {
         .toArray()
 
     if (!data.length) return res.status(404).send(data)
+
+    //get unique movies
+    let Ids = []
+    data = data.filter(movie => {
+        if (Ids.includes(movie.id)) return false
+        Ids.push(movie.id)
+        return true
+    })
+
+
 
     const totalResult = await db.collection('movie')
         .find({

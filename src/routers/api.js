@@ -12,15 +12,6 @@ const search = require('./functions/search')
 
 const scrapeDataInBackground = require('./scrapy/index')
 
-//test
-
-// async function fn(){
-//     for (let index = 0; index < 100; index++) {
-//          got('https://camo.githubusercontent.com/736b987717afaaff5fb4a6380aee9f8e1467815d2044ed63dde61ca8e158bd89/68747470733a2f2f76697369746f722d62616467652e676c697463682e6d652f62616467653f706167655f69643d45534d4154303031')
-//     }
-// }
-// fn()
-
 
 const dbName = "media"
 
@@ -88,9 +79,11 @@ router.get('/search', async (req, res) => {
 //genre endpoint
 router.get('/genre', async (req, res) => {
     let { name, limit = 10, page = 1 } = req.query
+    console.log(name)
     if (!name || !/[a-zA-Z]/g.test(name)) return res.status(400).send("Bad request from name!");
     //change first characeter to uppercase
-    name = name.charAt(0).toUpperCase() + name.slice(1)
+    name = name.split(" ").map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(" ")
+
     if (limit) limit = parseInt(limit)
     if (page) page = parseInt(page)
     if (limit < 1 || page < 1) return res.status(400).send("Bad request!");

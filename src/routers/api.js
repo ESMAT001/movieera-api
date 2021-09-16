@@ -79,7 +79,6 @@ router.get('/search', async (req, res) => {
 //genre endpoint
 router.get('/genre', async (req, res) => {
     let { name, limit = 10, page = 1 } = req.query
-    console.log(name)
     if (!name || !/[a-zA-Z]/g.test(name)) return res.status(400).send("Bad request from name!");
     //change first characeter to uppercase
     name = name.split(" ").map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(" ")

@@ -3,7 +3,11 @@ const metaData = {
     getTrendingURL(page = 1) {
         return `https://api.themoviedb.org/3/trending/movie/week?api_key=${this.apiKey}&page=${page}`
     },
-    projectionFields : {
+    getRecommendationURL(id, page = 1) {
+        return `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${this.apiKey}&language=en-US&page=${page}`
+    }
+    ,
+    projectionFields: {
         _id: false,
         adult: false,
         belongs_to_collection: false,

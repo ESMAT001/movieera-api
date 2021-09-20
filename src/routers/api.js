@@ -4,6 +4,8 @@ const { connectToDb } = require('../db')
 const fetchData = require('./functions/trending')
 const fetchMoviesRouteData = require('./functions/movies')
 const fetchSingleMovieData = require('./functions/movie')
+const fetchRecommendationsData = require('./functions/recommendations')
+
 const emitter = require('./functions/endScriptEmitter')
 
 const search = require('./functions/search')
@@ -74,6 +76,16 @@ router.get('/search', async (req, res) => {
     const data = await search(db, query, limit, page, mode)
     if (!data.length) return res.status(404).send(data)
     res.status(200).send(data)
+})
+
+//recommendations endpoint
+router.get('/recommendations', async (req, res) => {
+    let { id, limit = 4 } = req.query
+    if (limit) limit = parseInt(limit)
+    if (!id || /[-%^*|~={}\[\];<>?\/]/g.test(id)) return res.status(400).send("Bad request!");
+    //connect to db
+    const db = await connectToDb(dbName)
+    res.send(await fetchRecommendationsData(db, id, limit))
 })
 
 //genre endpoint

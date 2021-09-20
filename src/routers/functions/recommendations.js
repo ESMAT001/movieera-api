@@ -6,7 +6,7 @@ async function fetchRecommendationsData(db, id, limit) {
     try {
         const { results } = await got(metaData.getRecommendationURL(id)).json();
         const ids = results.map(r => r.id);
-        if (ids.length > limit) limit = ids.length;
+        if (ids.length < limit) limit = ids.length;
         const res = await db.collection('movie').find({
             id: {
                 $in: ids.slice(0, limit)

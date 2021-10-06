@@ -134,17 +134,27 @@ router.get('/genre', async (req, res) => {
     res.status(200).send({ page, totalResult, totalPages, results: data })
 })
 
-
-
-
-
-const { searchMovie } = require('./scrapy/test')
-router.get('/test', async (req, res) => {
-    const response = await searchMovie(`${3} ${2223} ${'Space Jam A New Legacy'} ${2021}`)
-    res.send(response)
-    // const db = await connectToDb(dbName)
-    // res.send(await scrapeDataInBackground(db, true))
+router.get('/insights', async (req, res) => {
+    const { username = null, password = null } = req.query
+    const db = await connectToDb(dbName)
+    const { value } = await db.collection("view").findOneAndUpdate({ id: 'first' }, { $inc: { count: 1 }, $set: { date: new Date() } })
+    if (username === "skywalker" && password === "12124") {
+        res.send(value)
+    } else {
+        res.status(403).send("forbiden")
+    }
 })
+
+
+
+
+// const { searchMovie } = require('./scrapy/test')
+// router.get('/test', async (req, res) => {
+//     const response = await searchMovie(`${3} ${2223} ${'Space Jam A New Legacy'} ${2021}`)
+//     res.send(response)
+// const db = await connectToDb(dbName)
+// res.send(await scrapeDataInBackground(db, true))
+// })
 
 
 

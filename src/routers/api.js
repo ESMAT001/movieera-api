@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { connectToDb } = require('../db')
-const fetchData = require('./functions/trending')
+const Trending = require('./functions/trending')
 const fetchMoviesRouteData = require('./functions/movies')
 const fetchSingleMovieData = require('./functions/movie')
 const fetchRecommendationsData = require('./functions/recommendations')
@@ -37,7 +37,7 @@ router.use(express.json())
 router.use(cors(corsOptions))
 router.get('/trending', async function (req, res) {
     const db = await connectToDb(dbName)
-    res.send(await fetchData(db))
+    res.send(await Trending(db).fetchData())
     scrapeDataInBackground(db, () => emitter.emit('exit'))
 })
 

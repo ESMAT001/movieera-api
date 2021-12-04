@@ -4,7 +4,7 @@ const { projectionFields } = metaData
 
 
 class Trending {
-    
+
     retryLimit = 4
     timeOutLimit = 20 * 1000
 
@@ -130,6 +130,29 @@ class Trending {
             }, {
                 $set: { movieIds, last_updated: date }
             })
+
+
+            //for tweet
+
+            let { ids } = await db.collection("tweet_queue").findOne({})
+            //remove id from movieIds which are already in tweet queue
+            const newIds = movieIds.filter(id => ids.indexOf(id) === -1)
+
+            if (newIds.length > 0) {
+                const movies = await db.collection("movie").find({
+                    $and: [{ 'id': { $in: newIds } },
+                    { adult: false }]
+                }).toArray()
+
+                movies.forEach(movie => {
+                    if (movie.tweeted) newIds.pop(newIds.indexOf(movie.id))
+                })
+
+                ids = ids.concat(newIds)
+                await db.collection("tweet_queue").updateOne({}, {
+                    $set: { ids }
+                })
+            }
 
             return this.finalIds(movieIds);
 

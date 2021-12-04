@@ -101,12 +101,23 @@ function movieDataScraper(db) {
 
         if (update) {
             console.log('updating')
-            return await db.collection("movie").updateOne({ id }, { $set: { download_links } })
+            return await db.collection("movie").updateOne({ id }, {
+                $set: {
+                    download_links,
+                    tweeted: false,
+                    links_updated: true
+                }
+            })
         }
 
         const responseData = await got(metaData.getMovieDetailsURL(id)).json()
         if (responseData.id !== id) return;
         responseData.download_links = download_links
+        responseData.tweeted = false
+        responseData.tweeted_at = null
+        responseData.tweet_id = null
+        responseData.links_updated = false
+
         //insert response data to db
         await db.collection("movie").insertOne(responseData)
         console.log('inserted')

@@ -105,7 +105,8 @@ function movieDataScraper(db) {
                 $set: {
                     download_links,
                     tweeted: false,
-                    links_updated: true
+                    links_updated: true,
+                    last_updated: new Date().toUTCString()
                 }
             })
         }
@@ -117,6 +118,7 @@ function movieDataScraper(db) {
         responseData.tweeted_at = null
         responseData.tweet_id = null
         responseData.links_updated = false
+        responseData.inserted_at = new Date().toUTCString()
 
         //insert response data to db
         await db.collection("movie").insertOne(responseData)

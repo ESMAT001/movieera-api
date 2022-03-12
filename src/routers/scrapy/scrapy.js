@@ -465,10 +465,11 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
 
     async function searchSecondSite(name, shouldReturn = false) {
         const originl_name = name
+        // const url = "https://www.film2serial.ir/?s="
         const url = "https://www.f2m.site/?s="
 
         name = createMoiveNameForUrl(name)
-        console.log(url + name)
+
         try {
             var html = await got(url + name, {
                 retry: { limit: retryLimit },
@@ -499,8 +500,8 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
                 override('extractDownloadLinks', extractDownloadLinksForSecondSite)
                 data = await crawlSinglePage(links[index].href, true,
                     {
-                        nameSelector: "div.post > div#post-title",
-                        downloadLinkSelector: "div.content > *"
+                        nameSelector: "div.post > div#post-title > h1",
+                        downloadLinkSelector: "div#content > *"
                     }
                 )
                 override('extractDownloadLinks', oldFn)

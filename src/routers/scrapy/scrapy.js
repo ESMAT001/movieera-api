@@ -499,8 +499,8 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
                 override('extractDownloadLinks', extractDownloadLinksForSecondSite)
                 data = await crawlSinglePage(links[index].href, true,
                     {
-                        nameSelector: "div.post > div.title",
-                        downloadLinkSelector: "div.contents > *"
+                        nameSelector: "div.post > div#post-title",
+                        downloadLinkSelector: "div.content > *"
                     }
                 )
                 override('extractDownloadLinks', oldFn)

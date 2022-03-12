@@ -482,7 +482,7 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
         }
         const document = new JSDOM(html.body).window.document;
 
-        const links = document.querySelectorAll("div.post > div.title > h3 > a")
+        const links = document.querySelectorAll("div.post > div#post-title > h2 > a")
 
 
         let data = null;

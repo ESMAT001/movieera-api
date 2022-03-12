@@ -465,7 +465,7 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
 
     async function searchSecondSite(name, shouldReturn = false) {
         const originl_name = name
-        const url = "https://www.film2serial.ir/?s="
+        const url = "https://www.f2m.site/?s="
 
         name = createMoiveNameForUrl(name)
 

@@ -565,12 +565,16 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
 
         }
 
-        //first site will be searched later becuse second site data is more reliable    
-        let data = await searchSecondSite(name + " " + movieDate, true);
-
+        //first site will be searched later becuse second site data is more reliable   
+        data = await searchFirstSite(name + " " + movieDate, true);
         if (!data && name.indexOf(":") !== -1) {
-            data = await searchSecondSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true);
+            data = await searchFirstSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true);
         }
+        // let data = await searchSecondSite(name + " " + movieDate, true);
+
+        // if (!data && name.indexOf(":") !== -1) {
+        //     data = await searchSecondSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true);
+        // }
 
         if (!data) {
             console.log('not found in first going from second to first site')

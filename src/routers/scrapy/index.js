@@ -163,8 +163,8 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
         console.log('updating old db data')
         const lastUpdated = new Date(dbData.last_updated)
         lastUpdated.setHours(lastUpdated.getHours() + 3)
-        // if (lastUpdated < new Date()) {
-        if (true) {
+        if (lastUpdated < new Date()) {
+        // if (true) {
             shouldScrapeData = true
             let date = new Date()
             date.setDate(date.getDate() + 1)

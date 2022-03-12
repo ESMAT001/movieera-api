@@ -468,7 +468,7 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
         const url = "https://www.f2m.site/?s="
 
         name = createMoiveNameForUrl(name)
-
+        console.log(url + name)
         try {
             var html = await got(url + name, {
                 retry: { limit: retryLimit },

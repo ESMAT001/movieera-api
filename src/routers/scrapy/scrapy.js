@@ -714,13 +714,13 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
         //     data = await searchSecondSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true);
         // }
 
-        if (!data) {
-            console.log('not found in first going from first to second site')
-            data = await searchSecondSite(name + " " + movieDate, true);
-            if (!data && name.indexOf(":") !== -1) {
-                data = await searchSecondSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true);
-            }
-        };
+        // if (!data) {
+        //     console.log('not found in first going from first to second site')
+        //     data = await searchSecondSite(name + " " + movieDate, true);
+        //     if (!data && name.indexOf(":") !== -1) {
+        //         data = await searchSecondSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true);
+        //     }
+        // };
 
         if (!data) console.log('not found in second')
 

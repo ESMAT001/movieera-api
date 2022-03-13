@@ -101,14 +101,13 @@ class Trending {
         let shouldUpdateData = false;
         if (dbData) {
             const lastUpdated = new Date(dbData.last_updated)
-
-            lastUpdated.setDate(lastUpdated.getDate() + 1)
+            lastUpdated.setHours(lastUpdated.getHours() + 3)
 
             if (lastUpdated < new Date()) shouldUpdateData = true;
 
         } else {
             let date = new Date()
-            date.setDate(date.getDate() + 1)
+            date.setHours(date.getHours() + 3)
             date = date.toUTCString()
             await db.collection("meta_data").insertOne({
                 name: 'trending',

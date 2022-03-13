@@ -167,7 +167,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
         // if (true) {
             shouldScrapeData = true
             let date = new Date()
-            date.setDate(date.getDate() + 1)
+            date.setHours(date.getHours() + 3)
             date = date.toUTCString()
             await db.collection("meta_data").updateOne({
                 name: 'scrapy',
@@ -181,7 +181,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
     } else {
         console.log('creating new data in db')
         let date = new Date()
-        date.setDate(date.getDate() + 1)
+        date.setHours(date.getHours() + 3)
         date = date.toUTCString()
         await db.collection("meta_data").insertOne({
             name: 'scrapy',

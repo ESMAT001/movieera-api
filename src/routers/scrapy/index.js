@@ -162,12 +162,12 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
     if (dbData) {
         console.log('updating old db data')
         const lastUpdated = new Date(dbData.last_updated)
-        lastUpdated.setHours(lastUpdated.getHours() + 3)
+        lastUpdated.setHours(lastUpdated.getHours() + 6)
         if (lastUpdated < new Date()) {
         // if (true) {
             shouldScrapeData = true
             let date = new Date()
-            date.setHours(date.getHours() + 3)
+            date.setHours(date.getHours() + 6)
             date = date.toUTCString()
             await db.collection("meta_data").updateOne({
                 name: 'scrapy',
@@ -181,7 +181,7 @@ async function scrapeDataInBackground(db, callback, shouldReturn = false) {
     } else {
         console.log('creating new data in db')
         let date = new Date()
-        date.setHours(date.getHours() + 3)
+        date.setHours(date.getHours() + 6)
         date = date.toUTCString()
         await db.collection("meta_data").insertOne({
             name: 'scrapy',

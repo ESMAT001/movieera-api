@@ -4,7 +4,6 @@ const { placeholderImageGenratorUrl } = require('../../utils')
 const singleMoviePlaceholderImage = async (imagePath, type = "base64") => {
     try {
         const { base64 } = await got(`${placeholderImageGenratorUrl}?src=https://image.tmdb.org/t/p/w300_and_h450_bestv2/${imagePath[0] === "/" ? imagePath.slice(1) : imagePath}&type=${type}`).json();
-
         return base64;
     } catch (error) {
         return null;

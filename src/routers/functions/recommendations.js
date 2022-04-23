@@ -1,6 +1,6 @@
 const got = require('got');
-
 const metaData = require('../../utils')
+const {multiMoviePlaceholderImage} = require('./placeholderImage')
 
 async function fetchRecommendationsData(db, id, limit) {
     try {
@@ -17,7 +17,7 @@ async function fetchRecommendationsData(db, id, limit) {
 
         const addedRes = [];
         const uniqueRes = res.filter(r => !addedRes.includes(r.id) && addedRes.push(r.id));
-        return uniqueRes;
+        return multiMoviePlaceholderImage(uniqueRes);
     } catch (error) {
         return [];
     }

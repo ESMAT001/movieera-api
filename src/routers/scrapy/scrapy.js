@@ -331,8 +331,6 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
             }
         }
 
-
-
     }
 
 
@@ -593,7 +591,6 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
 
 
 
-
     async function searchSecondSite(name, shouldReturn = false) {
         const originl_name = name
         // const url = "https://www.film2serial.ir/?s="
@@ -656,6 +653,65 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
 
     }
 
+
+    // async function searchThirdSite(name, shouldReturn = false) {
+    //     const url = 'https://filmban.top/?s=' + createMoiveNameForUrl(name)
+    //     console.log(url)
+    //     try {
+    //         var html = await got(url, {
+    //             retry: { limit: retryLimit },
+    //             timeout: timeOutLimit
+    //         })
+    //     } catch (error) {
+    //         return callbacks.onError({
+    //             error,
+    //             url
+    //         })
+    //     }
+    //     const dom = new JSDOM(html.body);
+    //     let links = dom.window.document.querySelectorAll('div.title > h2 > a')
+    //     let movietitlesFromSite = Array.from(dom.window.document.querySelectorAll(".box > .titlehaver > .title"));
+    //     // console.log(movietitlesFromSite)
+    //     if (links.length !== movietitlesFromSite.length) movietitlesFromSite.shift();
+
+
+    //     if (links.length === 0) {
+    //         const notFoundRegx = /مورد درخواستی در این سایت وجود ندارد/
+    //         links = dom.window.document.querySelectorAll(options.notFoundSelector)
+    //         if (notFoundRegx.test(links[0].textContent)) {
+    //             fs.appendFileSync('./notFound.txt', name + "\n")
+    //         }
+    //     } else {
+    //         // console.log(name, 'name from search part')
+    //         const movieNameRegx = new RegExp(name, 'i')
+    //         for (let index = 0; index < links.length; index++) {
+
+    //             if (
+    //                 new RegExp(/دانلود موسیقی متن فیلم/, 'g').test(decodeURI(links[index].href).replaceAll("-", ' '))
+    //                 ||
+    //                 new RegExp(/دانلود موسیقی متن فیلم/, 'g').test(movietitlesFromSite[index].textContent)
+    //             ) continue;
+
+
+    //             if (
+    //                 movieNameRegx.test(decodeURI(links[index].href).replaceAll("-", ' ')) ||
+    //                 (
+    //                     movieNameRegx.test(movietitlesFromSite[index].textContent)
+    //                     &&
+    //                     new RegExp("دانلود", 'i').test(movietitlesFromSite[index].textContent)
+    //                 )
+    //             ) {
+    //                 // console.log('textcontent', movietitlesFromSite[index].textContent)
+    //                 console.log('found', decodeURI(links[index].href))
+    //                 return await crawlSinglePage(links[index].href, shouldReturn)
+    //             }
+    //         }
+    //     }
+
+    // }
+
+
+
     async function search(name, db = false) {
         console.log(name)
         name = name.split(" ")
@@ -708,6 +764,11 @@ const scrapyJS = function (baseURL = {}, firstPage = 1, lastPage = 1, options = 
         if (!data && name.indexOf(":") !== -1) {
             data = await searchFirstSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true);
         }
+        //new site
+        // data = await searchFirstSite(name + " " + movieDate, true);
+        // if (!data && name.indexOf(":") !== -1) {
+        //     data = await searchFirstSite(name.replaceAll(/[:]/g, '') + " " + movieDate, true);
+        // }
         // let data = await searchSecondSite(name + " " + movieDate, true);
 
         // if (!data && name.indexOf(":") !== -1) {

@@ -100,11 +100,14 @@ router.get('/genre', async (req, res) => {
     if (limit < 1 || page < 1) return res.status(400).send("Bad request!");
     //connect to db
     const db = await connectToDb(dbName)
+
+    const { projectionFields } = require("../utils")
+
     let data = await db.collection('movie')
         .find({
             $and: [{ genres: { $elemMatch: { name } } },
             { status: "Released" }]
-        })
+        }, { projection: { ...projectionFields, images: false } })
         .sort({ release_date: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
@@ -120,8 +123,6 @@ router.get('/genre', async (req, res) => {
         return true
     })
 
-
-
     const totalResult = await db.collection('movie')
         .find({
             $and: [{ genres: { $elemMatch: { name } } },
@@ -131,7 +132,9 @@ router.get('/genre', async (req, res) => {
 
     const totalPages = Math.ceil(totalResult / limit)
 
-    res.status(200).send({ page, totalResult, totalPages, results: data })
+    const { multiMoviePlaceholderImage } = require("./functions/placeholderImage")
+
+    res.status(200).send({ page, totalResult, totalPages, results: await multiMoviePlaceholderImage(data) })
 })
 
 router.get('/insights', async (req, res) => {

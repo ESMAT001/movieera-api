@@ -1,7 +1,7 @@
 const metaData = require('../../utils')
 const got = require('got');
 const { projectionFields } = metaData
-
+const {multiMoviePlaceholderImage} = require('../functions/placeholderImage')
 
 class Trending {
 
@@ -81,7 +81,7 @@ class Trending {
 
             genreMovieData.push(
                 {
-                    [genre.name]: finalRes
+                    [genre.name]: await multiMoviePlaceholderImage(finalRes)
                 }
             )
         }
@@ -90,7 +90,10 @@ class Trending {
         const uniqueMovieData = trendingMovieData.filter((movie, index) => {
             return ids.indexOf(movie.id) === index
         })
-        return { trending: uniqueMovieData, genres: genreMovieData }
+        return { 
+            trending: await multiMoviePlaceholderImage(uniqueMovieData), 
+            genres: genreMovieData 
+        }
     }
 
 

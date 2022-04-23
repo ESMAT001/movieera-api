@@ -1,4 +1,5 @@
 const { projectionFields } = require('../../utils')
+const { multiMoviePlaceholderImage } = require('./placeholderImage')
 
 async function fetchMoviesRouteData(db, page, limit = 20) {
     const skip = (page - 1) * limit
@@ -13,14 +14,14 @@ async function fetchMoviesRouteData(db, page, limit = 20) {
     const uniqueData = data.filter((movie, index) => {
         return ids.indexOf(movie.id) === index
     })
-    
+
     const totalResult = await db.collection('movie')
         .find({ status: "Released" })
         .count()
 
     const totalPages = Math.ceil(totalResult / limit)
 
-    return { page, totalResult, totalPages, results: uniqueData }
+    return { page, totalResult, totalPages, results: await multiMoviePlaceholderImage(uniqueData) }
 }
 
 module.exports = fetchMoviesRouteData

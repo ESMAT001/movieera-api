@@ -1,4 +1,5 @@
 const sanitize = require('mongo-sanitize');
+const { multiMoviePlaceholderImage } = require('./placeholderImage');
 
 const projection = {
     _id: false,
@@ -34,9 +35,11 @@ async function search(db, query, limit, page, mode = "full") {
     const finalResults = await results.skip(skip).limit(limit).sort({ release_date: -1 }).toArray()
 
     const ids = finalResults.map(movie => movie.id);
-    const uniqueResults = finalResults.filter((movie, index) => {
-        return ids.indexOf(movie.id) === index;
-    });
+    const uniqueResults = await multiMoviePlaceholderImage(
+        finalResults.filter((movie, index) => {
+            return ids.indexOf(movie.id) === index;
+        })
+    );
 
     if (mode !== "full") return uniqueResults;
 

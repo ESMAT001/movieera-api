@@ -11,7 +11,6 @@ const singleMoviePlaceholderImage = async (imagePath, type = "base64") => {
 }
 
 const multiMoviePlaceholderImage = async (movieData, type = "base64") => {
-    // console.log(movieData)
     try {
         return await Promise.all(movieData.map(async (movie) => ({
             ...movie,
